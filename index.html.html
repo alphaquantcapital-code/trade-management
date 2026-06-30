@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Stop Loss & Target Calculator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Sora',sans-serif;
+}
+
+body{
+background:#D4D4D4;
+display:flex;
+justify-content:center;
+padding:40px 20px;
+}
+
+.container{
+
+max-width:750px;
+width:100%;
+background:#FFFFFF;
+padding:35px;
+border-radius:18px;
+box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+}
+
+h1{
+
+text-align:center;
+color:#2B2B2B;
+margin-bottom:30px;
+
+}
+
+.grid{
+
+display:grid;
+grid-template-columns:1fr;
+gap:18px;
+
+}
+
+label{
+
+font-size:14px;
+font-weight:600;
+color:#2B2B2B;
+margin-bottom:6px;
+display:block;
+
+}
+
+input{
+
+width:100%;
+padding:14px;
+font-size:16px;
+border:2px solid #B3B3B3;
+border-radius:10px;
+outline:none;
+
+}
+
+input:focus{
+
+border-color:#2B2B2B;
+
+}
+
+button{
+
+margin-top:25px;
+width:100%;
+padding:15px;
+font-size:17px;
+font-weight:700;
+background:#2B2B2B;
+color:white;
+border:none;
+border-radius:12px;
+cursor:pointer;
+transition:.2s;
+
+}
+
+button:hover{
+
+opacity:.9;
+
+}
+
+.results{
+
+margin-top:35px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:18px;
+
+}
+
+.card{
+
+background:#F7F7F7;
+border-left:6px solid #2B2B2B;
+padding:18px;
+border-radius:12px;
+
+}
+
+.card h3{
+
+margin-bottom:12px;
+color:#2B2B2B;
+
+}
+
+.result{
+
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+font-size:15px;
+color:#2B2B2B;
+
+}
+
+.footer{
+
+margin-top:30px;
+text-align:center;
+font-size:13px;
+color:#666;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Stop Loss & Target Calculator</h1>
+
+<div class="grid">
+
+<div>
+<label>Buy Price (₹)</label>
+<input type="number" id="buy" step="0.01">
+</div>
+
+<div>
+<label>Quantity</label>
+<input type="number" id="qty">
+</div>
+
+<div>
+<label>Risk Amount (₹)</label>
+<input type="number" id="risk">
+</div>
+
+</div>
+
+<button onclick="calculate()">Calculate</button>
+
+<div class="results">
+
+<div class="card">
+
+<h3>Trade Details</h3>
+
+<div class="result">
+<span>Stop Loss Price</span>
+<b id="sl">-</b>
+</div>
+
+<div class="result">
+<span>Stop Loss %</span>
+<b id="slpct">-</b>
+</div>
+
+<div class="result">
+<span>Risk / Share</span>
+<b id="rps">-</b>
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Targets</h3>
+
+<div class="result">
+<span>T1 (35%)</span>
+<b id="t1">-</b>
+</div>
+
+<div class="result">
+<span>Qty</span>
+<b id="q1">-</b>
+</div>
+
+<hr style="margin:10px 0;">
+
+<div class="result">
+<span>T2 (35%)</span>
+<b id="t2">-</b>
+</div>
+
+<div class="result">
+<span>Qty</span>
+<b id="q2">-</b>
+</div>
+
+<hr style="margin:10px 0;">
+
+<div class="result">
+<span>T3 (30%)</span>
+<b id="t3">-</b>
+</div>
+
+<div class="result">
+<span>Qty</span>
+<b id="q3">-</b>
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+    <p>Made for Momentum Swing Trading ❤️ </p>
+</div>
+
+</div>
+
+<script>
+
+function calculate(){
+
+const buy=parseFloat(document.getElementById("buy").value);
+const qty=parseFloat(document.getElementById("qty").value);
+const risk=parseFloat(document.getElementById("risk").value);
+
+if(!buy||!qty||!risk){
+
+alert("Please fill all inputs.");
+return;
+
+}
+
+const riskPerShare=risk/qty;
+
+const stoploss=buy-riskPerShare;
+
+const slPercent=((buy-stoploss)/buy)*100;
+
+const target1=buy+riskPerShare;
+
+const target2=buy+(riskPerShare*2);
+
+const target3=buy+(riskPerShare*4);
+
+const qty1=Math.round(qty*0.35);
+
+const qty2=Math.round(qty*0.35);
+
+const qty3=qty-qty1-qty2;
+
+document.getElementById("sl").innerHTML="₹ "+stoploss.toFixed(2);
+
+document.getElementById("slpct").innerHTML=slPercent.toFixed(2)+"%";
+
+document.getElementById("rps").innerHTML="₹ "+riskPerShare.toFixed(2);
+
+document.getElementById("t1").innerHTML="₹ "+target1.toFixed(2);
+
+document.getElementById("t2").innerHTML="₹ "+target2.toFixed(2);
+
+document.getElementById("t3").innerHTML="₹ "+target3.toFixed(2);
+
+document.getElementById("q1").innerHTML=qty1;
+
+document.getElementById("q2").innerHTML=qty2;
+
+document.getElementById("q3").innerHTML=qty3;
+
+}
+
+</script>
+
+</body>
+</html>
